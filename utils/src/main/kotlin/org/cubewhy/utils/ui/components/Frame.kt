@@ -5,19 +5,20 @@ import java.awt.Component
 import java.awt.Container
 import java.awt.Dimension
 import javax.swing.JFrame
-import javax.swing.WindowConstants
 
-class Frame(
-    title: String?,
-    wight: Int, height: Int,
-    defaultCloseOperation: Int,
-) : ComponentBuilder<JFrame>() {
+class Frame : ComponentBuilder<JFrame>() {
     override val component: JFrame = JFrame()
 
-    init {
-        component.title = title
-        component.size = Dimension(wight, height)
-        component.defaultCloseOperation = defaultCloseOperation
+    fun title(title: String) {
+        this.component.title = title
+    }
+
+    fun size(width: Int, height: Int) {
+        this.component.size = Dimension(width, height)
+    }
+
+    fun defaultCloseOperation(operation: Int) {
+        this.component.defaultCloseOperation = operation
     }
 
     fun contentPane(init: Panel.() -> Unit) {
@@ -31,13 +32,5 @@ class Frame(
 }
 
 fun frame(
-    title: String? = "Swing Application",
-    wight: Int = 600, height: Int = 400,
-    defaultCloseOperation: Int = WindowConstants.EXIT_ON_CLOSE,
     init: Frame.() -> Unit
-) = Frame(
-    title = title,
-    wight = wight,
-    height = height,
-    defaultCloseOperation = defaultCloseOperation
-).apply(init)
+) = Frame().apply(init)

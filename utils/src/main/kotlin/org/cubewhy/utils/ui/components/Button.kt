@@ -3,12 +3,16 @@ package org.cubewhy.utils.ui.components
 import org.cubewhy.utils.ui.ComponentBuilder
 import org.cubewhy.utils.ui.ObservableState
 import java.awt.Component
-import javax.swing.JLabel
+import javax.swing.JButton
 
-class Label : ComponentBuilder<JLabel>() {
-    override val component: JLabel = JLabel()
+class Button : ComponentBuilder<JButton>() {
+    override val component: JButton = JButton()
 
     private var trigger: ObservableState<String>? = null
+
+    fun text(string: String) {
+        component.text = string
+    }
 
     fun state(state: ObservableState<String>) {
         this.trigger = state
@@ -16,8 +20,8 @@ class Label : ComponentBuilder<JLabel>() {
         text(state.get())
     }
 
-    fun text(text: String) {
-        component.text = text
+    fun onClick(action: () -> Unit) {
+        component.addActionListener { action.invoke() }
     }
 
     override fun build(): Component {
@@ -26,7 +30,7 @@ class Label : ComponentBuilder<JLabel>() {
     }
 }
 
-fun ComponentBuilder<*>.label(init: Label.() -> Unit = {}) {
-    val label = Label().apply(init)
-    this.nativeComponent(label.build())
+fun ComponentBuilder<*>.button(init: Button.() -> Unit) {
+    val button = Button().apply(init).build()
+    this.nativeComponent(button)
 }
