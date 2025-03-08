@@ -8,6 +8,7 @@ import org.cubewhy.astra.pages.PageManager
 import org.cubewhy.astra.plugins.annotations.PostInit
 import org.cubewhy.astra.plugins.annotations.PreInit
 import org.cubewhy.astra.plugins.annotations.ScanPackage
+import org.cubewhy.astra.plugins.annotations.Unload
 import org.cubewhy.utils.ClassScanner
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -29,6 +30,8 @@ object PluginManager {
         // init plugin
         logger.info { "Registered plugin ${plugin.name}" }
         val instance = plugin.declaredConstructors.first { it.parameterCount == 0 }.newInstance() as Plugin
+        // create bridge
+        instance.bridge = AstraBridgeImpl(instance)
         // exec pre-init method
         findPreInitMethods(instance::class).forEach { method -> method.call(instance) }
         // register with eventBus
@@ -56,6 +59,21 @@ object PluginManager {
         }
     }
 
+    internal fun unloadPlugins() {
+        logger.info { "Unloading plugins..." }
+        plugins.forEach { plugin ->
+            unloadPlugin(plugin)
+        }
+    }
+
+    internal fun unloadPlugin(plugin: Plugin) {
+        logger.info { "Unloading plugin ${plugin::class.java.name}" }
+        // invoke unload method
+        findUnloadMethods(plugin::class).forEach { method ->
+            method.call(plugin)
+        }
+    }
+
     @EventHandler
     internal suspend fun onPostInit(event: PostInitEvent) {
         plugins.forEach { plugin ->
@@ -74,6 +92,12 @@ object PluginManager {
         return plugin.members
             .filterIsInstance<KFunction<*>>()
             .filter { it.findAnnotation<PostInit>() != null }
+    }
+
+    private fun findUnloadMethods(plugin: KClass<out Plugin>): List<KFunction<*>> {
+        return plugin.members
+            .filterIsInstance<KFunction<*>>()
+            .filter { it.findAnnotation<Unload>() != null }
     }
 
     private fun findScanPackages(clazz: Class<*>): List<String> {

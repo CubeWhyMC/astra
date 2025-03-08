@@ -17,7 +17,7 @@ object ConfigManager {
     var config: Config = Config()
 
     @OptIn(ExperimentalSerializationApi::class)
-    fun load() {
+    internal fun load() {
         // parse file
         logger.info { "Loading config" }
         try {
@@ -28,7 +28,7 @@ object ConfigManager {
     }
 
     @OptIn(ExperimentalSerializationApi::class)
-    fun save() {
+    internal fun save() {
         // save config to local
         logger.info { "Saving config" }
         JSON.encodeToStream(this.config, configFile.outputStream())

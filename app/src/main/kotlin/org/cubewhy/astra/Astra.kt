@@ -29,7 +29,7 @@ fun main() {
     ConfigManager.load()
 
     ClassScanner.scanRegisteredClasses().forEach { clazz ->
-        if (clazz.java.interfaces.contains(Plugin::class.java)) {
+        if (clazz.java.superclass == Plugin::class.java) {
             if (!ConfigManager.config.disabledPlugins.contains(clazz.java.name)) {
                 PluginManager.registerPlugin(clazz.java as Class<out Plugin>)
             }
@@ -63,6 +63,8 @@ private fun ui() {
         onExit {
             // save config
             ConfigManager.save()
+            // unload plugins
+            PluginManager.unloadPlugins()
         }
     }
 
