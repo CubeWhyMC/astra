@@ -2,7 +2,7 @@ package org.cubewhy.utils.ui
 
 class ObservableState<T>(initialValue: T) {
     private var value: T = initialValue
-    private var onChange: ((T) -> Unit)? = null
+    private var dispatchers: MutableList<(T) -> Unit> = mutableListOf()
 
     fun get(): T {
         return value
@@ -11,12 +11,12 @@ class ObservableState<T>(initialValue: T) {
     fun set(newValue: T) {
         if (value != newValue) {
             value = newValue
-            onChange?.invoke(newValue)
+            dispatchers.forEach { it.invoke(newValue) }
         }
     }
 
     fun observe(onChange: (T) -> Unit) {
-        this.onChange = onChange
+        this.dispatchers.add(onChange)
     }
 }
 

@@ -31,6 +31,5 @@ class Button : ComponentBuilder<JButton>() {
 }
 
 fun ComponentBuilder<*>.button(init: Button.() -> Unit) {
-    val button = Button().apply(init).build()
-    this.nativeComponent(button)
+    this.component(Button().apply(init))
 }

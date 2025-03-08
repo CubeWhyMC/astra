@@ -27,6 +27,5 @@ class Label : ComponentBuilder<JLabel>() {
 }
 
 fun ComponentBuilder<*>.label(init: Label.() -> Unit = {}) {
-    val label = Label().apply(init)
-    this.nativeComponent(label.build())
+    this.component(Label().apply(init))
 }

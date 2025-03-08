@@ -4,6 +4,8 @@ import org.cubewhy.utils.ui.ComponentBuilder
 import java.awt.Component
 import java.awt.Container
 import java.awt.Dimension
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
 import javax.swing.JFrame
 
 class Frame : ComponentBuilder<JFrame>() {
@@ -24,6 +26,14 @@ class Frame : ComponentBuilder<JFrame>() {
     fun contentPane(init: Panel.() -> Unit) {
         val panelComponent = Panel().apply(init)
         this.component.contentPane = panelComponent.build() as Container?
+    }
+
+    fun onExit(func: () -> Unit) {
+        this.component.addWindowListener(object: WindowAdapter() {
+            override fun windowClosing(e: WindowEvent) {
+                func.invoke()
+            }
+        })
     }
 
     override fun build(): Component {
