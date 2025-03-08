@@ -33,7 +33,7 @@ fun main() {
 
     ClassScanner.scanRegisteredClasses().forEach { clazz ->
         if (clazz.java.superclass == Plugin::class.java) {
-            val pluginClass = clazz.java as Class<out Plugin>
+            @Suppress("UNCHECKED_CAST") val pluginClass = clazz.java as Class<out Plugin>
             if (!ConfigManager.config.disabledPlugins.contains(clazz.java.name)) {
                 PluginManager.registerPlugin(pluginClass)
             } else {
@@ -71,10 +71,10 @@ private fun ui() {
         }
 
         onExit {
-            // save config
-            ConfigManager.save()
             // unload plugins
             PluginManager.unloadPlugins()
+            // save config
+            ConfigManager.save()
         }
     }
 

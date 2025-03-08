@@ -48,6 +48,7 @@ object PluginManager {
 
     internal fun registerDisabledPlugin(plugin: Class<out Plugin>) {
         val instance = plugin.declaredConstructors.first { it.parameterCount == 0 }.newInstance() as Plugin
+        instance.bridge = AstraBridgeImpl(instance)
         logger.info { "Registered disabled plugin ${plugin.name}" }
         plugins.add(InternalPlugin(instance = instance, state = PluginState.DISABLED))
     }
@@ -71,7 +72,9 @@ object PluginManager {
     internal fun unloadPlugins() {
         logger.info { "Unloading plugins..." }
         plugins.forEach { plugin ->
-            unloadPlugin(plugin.instance)
+            if (plugin.state == PluginState.ENABLED) {
+                unloadPlugin(plugin.instance)
+            }
         }
     }
 

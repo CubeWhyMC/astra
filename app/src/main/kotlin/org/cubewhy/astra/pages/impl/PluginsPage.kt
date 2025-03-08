@@ -111,9 +111,10 @@ private fun ComponentBuilder<*>.pluginConfigPanel(plugin: InternalPlugin) {
             padding(vertical = 5)
             button {
                 state(toggleButtonText)
+                val pluginState = observableStateOf(false)
 
                 onClick {
-                    if (plugin.state == PluginState.ENABLED) {
+                    if (pluginState.get()) {
                         PluginManager.disablePlugin(plugin.instance)
                     } else {
                         PluginManager.enablePlugin(plugin.instance)
@@ -124,8 +125,14 @@ private fun ComponentBuilder<*>.pluginConfigPanel(plugin: InternalPlugin) {
                     if (e.plugin == plugin.instance) {
                         toggleButtonText.set(
                             when (e.state) {
-                                PluginState.ENABLED -> "Disable Plugin"
-                                PluginState.DISABLED -> "Enable Plugin"
+                                PluginState.ENABLED -> {
+                                    pluginState.set(true)
+                                    "Disable Plugin"
+                                }
+                                PluginState.DISABLED -> {
+                                    pluginState.set(false)
+                                    "Enable Plugin"
+                                }
                             }
                         )
                     }
@@ -136,6 +143,7 @@ private fun ComponentBuilder<*>.pluginConfigPanel(plugin: InternalPlugin) {
         if (plugin.state == PluginState.ENABLED) {
             plugin.instance.configPage()?.let { configPage ->
                 panel {
+                    layout { flowLayout(FlowLayout.LEFT) }
                     border { BorderFactory.createTitledBorder("Plugin Configuration") }
                     component(configPage)
                 }

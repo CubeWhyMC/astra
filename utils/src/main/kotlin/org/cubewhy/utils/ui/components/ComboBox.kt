@@ -47,11 +47,11 @@ class ComboBox<E> : ComponentBuilder<JComboBox<E>>() {
 
     @Suppress("UNCHECKED_CAST")
     fun onChange(callback: (E) -> Unit) {
-        component.addActionListener { callback(component.selectedItem as E) }
+        this.component.addActionListener { callback(component.selectedItem as E) }
     }
 
     override fun build(): Component {
-        return component
+        return this.component
     }
 
 }
