@@ -6,6 +6,7 @@ import org.cubewhy.astra.events.EventBus
 import org.cubewhy.astra.events.PostInitEvent
 import org.cubewhy.astra.pages.PageManager
 import org.cubewhy.astra.pages.impl.PluginsPage
+import org.cubewhy.astra.pages.impl.SettingsPage
 import org.cubewhy.astra.pages.impl.WelcomePage
 import org.cubewhy.astra.plugins.Plugin
 import org.cubewhy.astra.plugins.PluginManager
@@ -54,6 +55,7 @@ private fun ui() {
     // load pages
     PageManager.registerInternalPage(WelcomePage())
     PageManager.registerInternalPage(PluginsPage())
+    PageManager.registerInternalPage(SettingsPage())
 
     val window = frame {
         title("Astra Launcher")

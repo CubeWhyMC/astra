@@ -45,7 +45,7 @@ class ThemePlugin : Plugin() {
             "intellij-light" -> FlatIntelliJLaf()
             "light" -> FlatLightLaf()
             "unset" -> null
-            else -> throw IllegalArgumentException("Unknown theme ${config.theme}") // todo custom theme
+            else -> throw IllegalArgumentException("Unknown theme ${config.theme}")
         }
         theme?.let {
             UIManager.setLookAndFeel(it)

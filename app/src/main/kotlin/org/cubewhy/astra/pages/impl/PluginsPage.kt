@@ -23,7 +23,7 @@ class PluginsPage : Page {
     override fun component() =
         panel {
             layout { borderLayout() }
-            border { BorderFactory.createTitledBorder("Plugins") }
+            border { BorderFactory.createTitledBorder(name) }
 
             val selectedPlugin = observableStateOf<InternalPlugin?>(null)
 

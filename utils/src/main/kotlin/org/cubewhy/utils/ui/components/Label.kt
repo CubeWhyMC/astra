@@ -3,6 +3,7 @@ package org.cubewhy.utils.ui.components
 import org.cubewhy.utils.ui.ComponentBuilder
 import org.cubewhy.utils.ui.ObservableState
 import java.awt.Component
+import java.awt.Font
 import javax.swing.JLabel
 
 class Label : ComponentBuilder<JLabel>() {
@@ -17,12 +18,16 @@ class Label : ComponentBuilder<JLabel>() {
     }
 
     fun text(text: String) {
-        component.text = text
+        this.component.text = text
+    }
+
+    fun size(size: Int) {
+        this.component.font = Font(this.component.font.name, this.component.font.style, size)
     }
 
     override fun build(): Component {
-        trigger?.observe { component.text = it }
-        return component
+        trigger?.observe { this.component.text = it }
+        return this.component
     }
 }
 
