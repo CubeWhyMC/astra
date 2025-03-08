@@ -4,6 +4,9 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.cubewhy.astra.configs.ConfigManager
 import org.cubewhy.astra.events.EventBus
 import org.cubewhy.astra.events.PostInitEvent
+import org.cubewhy.astra.pages.PageManager
+import org.cubewhy.astra.pages.impl.PluginsPage
+import org.cubewhy.astra.pages.impl.WelcomePage
 import org.cubewhy.astra.plugins.Plugin
 import org.cubewhy.astra.plugins.PluginManager
 import org.cubewhy.astra.ui.mainWindow
@@ -30,8 +33,11 @@ fun main() {
 
     ClassScanner.scanRegisteredClasses().forEach { clazz ->
         if (clazz.java.superclass == Plugin::class.java) {
+            val pluginClass = clazz.java as Class<out Plugin>
             if (!ConfigManager.config.disabledPlugins.contains(clazz.java.name)) {
-                PluginManager.registerPlugin(clazz.java as Class<out Plugin>)
+                PluginManager.registerPlugin(pluginClass)
+            } else {
+                PluginManager.registerDisabledPlugin(pluginClass)
             }
         }
     }
@@ -44,6 +50,10 @@ fun main() {
 
 private fun ui() {
     logger.info { "Init GUI" }
+
+    // load pages
+    PageManager.registerInternalPage(WelcomePage())
+    PageManager.registerInternalPage(PluginsPage())
 
     val window = frame {
         title("Astra Launcher")

@@ -8,11 +8,15 @@ import org.cubewhy.astra.plugins.annotations.PreInit
 import org.cubewhy.astra.plugins.annotations.Scan
 import org.cubewhy.astra.plugins.annotations.Unload
 import org.cubewhy.astra.plugins.impl.theme.configs.ThemeConfig
+import org.cubewhy.utils.ui.components.label
+import org.cubewhy.utils.ui.components.panel
 import javax.swing.UIManager
 
 @Scan
 class ThemePlugin : Plugin() {
-    override val name: String = "Themes"
+    override val name: String = "Flatlaf Themes"
+    override val version: String = "1.0.0"
+    override val description: String = "Flatlaf themes for Astra Launcher"
 
     companion object {
         private val logger = KotlinLogging.logger {}
@@ -41,4 +45,8 @@ class ThemePlugin : Plugin() {
         // save config
         bridge.saveConfig(config)
     }
+
+    override fun configPage() = panel {
+        label {text("themes config")}
+    }.build()
 }

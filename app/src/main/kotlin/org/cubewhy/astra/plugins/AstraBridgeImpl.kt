@@ -13,11 +13,11 @@ class AstraBridgeImpl(private val plugin: Plugin) : AstraBridge() {
     private val configKey = plugin::class.java.name
 
     @Suppress("UNCHECKED_CAST", "UNNECESSARY_NOT_NULL_ASSERTION")
-    override fun <T> loadConfig(defaltValue: T): T {
-        val json = ConfigManager.config.pluginConfigs[configKey] ?: return defaltValue
-        defaltValue ?: throw NullPointerException("Default value cannot be null")
-        val serializer = defaltValue!!::class.companionObject!!.functions.first { it.name == "serializer" }
-            .call(defaltValue!!::class.companionObjectInstance) as KSerializer<T>
+    override fun <T> loadConfig(defaultValue: T): T {
+        val json = ConfigManager.config.pluginConfigs[configKey] ?: return defaultValue
+        defaultValue ?: throw NullPointerException("Default value cannot be null")
+        val serializer = defaultValue!!::class.companionObject!!.functions.first { it.name == "serializer" }
+            .call(defaultValue!!::class.companionObjectInstance) as KSerializer<T>
         return JSON.decodeFromJsonElement(serializer, json)
     }
 

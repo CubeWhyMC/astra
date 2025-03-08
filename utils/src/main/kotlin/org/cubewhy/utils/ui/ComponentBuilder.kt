@@ -1,9 +1,8 @@
 package org.cubewhy.utils.ui
 
-import java.awt.Component
-import java.awt.Container
-import java.awt.Dimension
-import java.awt.LayoutManager
+import org.cubewhy.astra.events.Event
+import org.cubewhy.astra.events.EventBus
+import java.awt.*
 import javax.swing.Box
 import javax.swing.JComponent
 
@@ -44,6 +43,13 @@ abstract class ComponentBuilder<out T> where T : Component {
         }
     }
 
+    inline fun <reified E: Event> handleEvent(crossinline handler: suspend (E) -> Unit) {
+        // register handler
+        EventBus.register(E::class) {
+            handler(it as E)
+        }
+    }
+
     fun <L : LayoutManager> layout(init: T.() -> L): L {
         val layout = init.invoke(this.component)
         if (this.component is JComponent) {
@@ -53,4 +59,20 @@ abstract class ComponentBuilder<out T> where T : Component {
     }
 
     abstract fun build(): Component
+}
+
+fun ComponentBuilder<JComponent>.background(color: Color) {
+    this.component.background = color
+}
+
+fun ComponentBuilder<JComponent>.foreground(color: Color) {
+    this.component.foreground = color
+}
+
+fun ComponentBuilder<JComponent>.alignmentX(alignmentX: Float) {
+    this.component.alignmentX = alignmentX
+}
+
+fun ComponentBuilder<JComponent>.alignmentY(alignmentY: Float) {
+    this.component.alignmentY = alignmentY
 }
