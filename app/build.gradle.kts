@@ -3,6 +3,7 @@ plugins {
     // The shared code is located in `buildSrc/src/main/kotlin/kotlin-jvm.gradle.kts`.
     id("buildsrc.convention.kotlin-jvm")
     alias(libs.plugins.kotlinPluginSerialization)
+    alias(libs.plugins.shadow)
 
     // Apply the Application plugin to add support for building an executable JVM application.
     application
@@ -16,6 +17,25 @@ dependencies {
     implementation(libs.bundles.logging)
     implementation(libs.bundles.kotlinxEcosystem)
 }
+
+tasks.shadowJar {
+    archiveClassifier.set("fatjar")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    exclude("native-binaries/**")
+
+    exclude("LICENSE.txt")
+
+    exclude("META-INF/maven/**")
+    exclude("META-INF/versions/**")
+
+    exclude("org/junit/**")
+}
+
+tasks.jar {
+    dependsOn("shadowJar")
+}
+
 
 application {
     // Define the Fully Qualified Name for the application main class
