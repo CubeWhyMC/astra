@@ -14,7 +14,7 @@ dependencies {
     implementation(project(":utils"))
     implementation(libs.flatlaf)
     implementation(libs.kotlin.reflect)
-    implementation(libs.bundles.logging)
+    implementation(libs.bundles.logging.impl)
     implementation(libs.bundles.kotlinxEcosystem)
 }
 

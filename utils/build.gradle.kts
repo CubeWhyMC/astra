@@ -10,6 +10,8 @@ dependencies {
     // Apply the kotlinx bundle of dependencies from the version catalog (`gradle/libs.versions.toml`).
     implementation(libs.bundles.kotlinxEcosystem)
     implementation(libs.bundles.ktor)
+    implementation(libs.bundles.logging)
     implementation(libs.kotlin.reflect)
+    implementation("io.ktor:ktor-client-okhttp-jvm:3.1.1")
     testImplementation(kotlin("test"))
 }

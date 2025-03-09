@@ -35,7 +35,8 @@ ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "kto
 [bundles]
 kotlinxEcosystem = ["kotlinxDatetime", "kotlinxSerialization", "kotlinxCoroutines"]
 ktor = ["ktor-client-core", "ktor-client-okhttp"]
-logging = ["kotlin-logging", "slf4j-api", "slf4j-log4j12", "log4j-api", "log4j-core"]
+logging = ["kotlin-logging", "slf4j-api"]
+logging-impl = ["kotlin-logging", "slf4j-api", "slf4j-log4j12", "log4j-api", "log4j-core"]
 
 [plugins]
 shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow"}
