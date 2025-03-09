@@ -97,7 +97,7 @@ object PluginManager {
     internal suspend fun onPostInit(event: PostInitEvent) {
         plugins.forEach { plugin ->
             // exec post-init method
-            findPostInitMethods(plugin.instance::class).forEach { method -> method.callSuspend(plugin) }
+            findPostInitMethods(plugin.instance::class).forEach { method -> method.callSuspend(plugin.instance) }
             // publish event
             EventBus.post(TogglePluginEvent(plugin.instance, plugin.state))
         }
