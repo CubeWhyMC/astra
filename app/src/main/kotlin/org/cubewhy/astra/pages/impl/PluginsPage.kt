@@ -5,6 +5,7 @@ import org.cubewhy.astra.plugins.InternalPlugin
 import org.cubewhy.astra.plugins.Page
 import org.cubewhy.astra.plugins.PluginManager
 import org.cubewhy.astra.plugins.PluginState
+import org.cubewhy.astra.ui.t
 import org.cubewhy.utils.ui.*
 import org.cubewhy.utils.ui.components.button
 import org.cubewhy.utils.ui.components.label
@@ -17,8 +18,7 @@ import javax.swing.BorderFactory
 import javax.swing.BoxLayout
 
 class PluginsPage : Page {
-    override val name: String
-        get() = "Plugins"
+    override val name: String = t("gui.page.plugins.name")
 
     override fun component() =
         panel {
@@ -59,7 +59,7 @@ class PluginsPage : Page {
                     constraints("welcome")
 
                     label {
-                        text("Click a plugin to start")
+                        text(t("gui.page.plugins.welcome"))
                     }
                 }
 
@@ -94,7 +94,7 @@ private fun ComponentBuilder<*>.pluginConfigPanel(plugin: InternalPlugin) {
 
         panel {
             constraints(BorderLayout.NORTH)
-            border { BorderFactory.createTitledBorder("Plugin Information") }
+            border { BorderFactory.createTitledBorder(t("gui.page.plugins.info")) }
             layout { boxLayout(BoxLayout.Y_AXIS) }
 
             plugin.instance.description?.let { description ->
@@ -104,7 +104,7 @@ private fun ComponentBuilder<*>.pluginConfigPanel(plugin: InternalPlugin) {
                 }
             }
 
-            label { text("Plugin class: ${plugin.instance::class.java.name}") }
+            label { text("${t("gui.page.plugins.info.class")} ${plugin.instance::class.java.name}") }
 
             val toggleButtonText = observableStateOf("Something went wrong, please restart")
 
@@ -127,11 +127,11 @@ private fun ComponentBuilder<*>.pluginConfigPanel(plugin: InternalPlugin) {
                             when (e.state) {
                                 PluginState.ENABLED -> {
                                     pluginState.set(true)
-                                    "Disable Plugin"
+                                    t("gui.page.plugins.disable")
                                 }
                                 PluginState.DISABLED -> {
                                     pluginState.set(false)
-                                    "Enable Plugin"
+                                    t("gui.page.plugins.enable")
                                 }
                             }
                         )
@@ -144,7 +144,7 @@ private fun ComponentBuilder<*>.pluginConfigPanel(plugin: InternalPlugin) {
             plugin.instance.configPage()?.let { configPage ->
                 panel {
                     layout { flowLayout(FlowLayout.LEFT) }
-                    border { BorderFactory.createTitledBorder("Plugin Configuration") }
+                    border { BorderFactory.createTitledBorder(t("gui.page.plugins.config")) }
                     component(configPage)
                 }
             }

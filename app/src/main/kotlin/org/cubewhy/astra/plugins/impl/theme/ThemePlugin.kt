@@ -12,9 +12,11 @@ import org.cubewhy.astra.plugins.annotations.PreInit
 import org.cubewhy.astra.plugins.annotations.Scan
 import org.cubewhy.astra.plugins.annotations.Unload
 import org.cubewhy.astra.plugins.impl.theme.configs.ThemeConfig
+import org.cubewhy.astra.ui.t
 import org.cubewhy.utils.ui.alignmentX
 import org.cubewhy.utils.ui.boxLayout
 import org.cubewhy.utils.ui.components.comboBox
+import org.cubewhy.utils.ui.components.label
 import org.cubewhy.utils.ui.components.panel
 import java.awt.Component
 import javax.swing.BoxLayout
@@ -22,9 +24,9 @@ import javax.swing.UIManager
 
 @Scan
 class ThemePlugin : Plugin() {
-    override val name: String = "Flatlaf Themes"
+    override val name: String = t("gui.plugins.theme.name")
     override val version: String = "1.0.0"
-    override val description: String = "Flatlaf themes for Astra Launcher"
+    override val description: String = t("gui.plugins.theme.description")
 
     companion object {
         private val logger = KotlinLogging.logger {}
@@ -62,21 +64,32 @@ class ThemePlugin : Plugin() {
         layout { boxLayout(BoxLayout.Y_AXIS) }
         alignmentX(Component.LEFT_ALIGNMENT)
 
-        comboBox {
+        label {
             alignmentX(Component.LEFT_ALIGNMENT)
+            text(t("gui.plugins.theme.settings.tip"))
+        }
 
-            addOption("dark")
-            addOption("mac-dark")
-            addOption("darcula")
-            addOption("intellij-light")
-            addOption("light")
-            addOption("mac-light")
-            addOption("unset")
+        panel {
+            layout { boxLayout(BoxLayout.X_AXIS) }
 
-            select(config.theme)
+            label { text(t("gui.plugins.theme.settings.theme")) }
+            padding(horizontal = 10)
+            comboBox {
+                alignmentX(Component.LEFT_ALIGNMENT)
 
-            onChange { element ->
-                config.theme = element
+                addOption("dark")
+                addOption("mac-dark")
+                addOption("darcula")
+                addOption("intellij-light")
+                addOption("light")
+                addOption("mac-light")
+                addOption("unset")
+
+                select(config.theme)
+
+                onChange { element ->
+                    config.theme = element
+                }
             }
         }
     }.build()

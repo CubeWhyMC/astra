@@ -3,6 +3,7 @@ package org.cubewhy.astra.pages.impl
 import org.cubewhy.astra.configs.ConfigManager
 import org.cubewhy.astra.configs.Language
 import org.cubewhy.astra.plugins.Page
+import org.cubewhy.astra.ui.t
 import org.cubewhy.utils.ui.alignmentX
 import org.cubewhy.utils.ui.boxLayout
 import org.cubewhy.utils.ui.components.comboBox
@@ -15,7 +16,7 @@ import javax.swing.BorderFactory
 import javax.swing.BoxLayout
 
 class SettingsPage : Page {
-    override val name: String = "Settings"
+    override val name: String = t("gui.page.settings.name")
 
     override fun component() = panel {
         layout { boxLayout(BoxLayout.Y_AXIS) }
@@ -25,12 +26,12 @@ class SettingsPage : Page {
         panel {
             layout { boxLayout(BoxLayout.Y_AXIS) }
             alignmentX(Component.LEFT_ALIGNMENT)
-            border { BorderFactory.createTitledBorder("Astra Settings") }
+            border { BorderFactory.createTitledBorder(t("gui.page.settings.astra")) }
 
             panel {
                 layout { flowLayout(FlowLayout.LEFT) }
 
-                label { text("Language:") }
+                label { text(t("gui.page.settings.astra.language")) }
                 comboBox {
                     addOptions(Language.entries)
                     select(ConfigManager.config.language)

@@ -10,9 +10,7 @@ import org.cubewhy.astra.pages.impl.SettingsPage
 import org.cubewhy.astra.pages.impl.WelcomePage
 import org.cubewhy.astra.plugins.Plugin
 import org.cubewhy.astra.plugins.PluginManager
-import org.cubewhy.astra.ui.mainWindow
-import org.cubewhy.astra.ui.navBar
-import org.cubewhy.astra.ui.statusBar
+import org.cubewhy.astra.ui.*
 import org.cubewhy.utils.ClassScanner
 import org.cubewhy.utils.ui.borderLayout
 import org.cubewhy.utils.ui.components.frame
@@ -27,11 +25,15 @@ fun main() {
     logger.info { "Welcome to Astra!" }
     logger.info { "Powered by LunarCN https://lunarclient.top" }
 
-    // todo load plugins from jar
 
     // load config
     ConfigManager.load()
 
+    // init language
+    Translate.useLanguage(ConfigManager.config.language)
+
+    // todo load plugins from jar
+    // register plugins
     ClassScanner.scanRegisteredClasses().forEach { clazz ->
         if (clazz.java.superclass == Plugin::class.java) {
             @Suppress("UNCHECKED_CAST") val pluginClass = clazz.java as Class<out Plugin>
@@ -58,7 +60,7 @@ private fun ui() {
     PageManager.registerInternalPage(SettingsPage())
 
     val window = frame {
-        title("Astra Launcher")
+        title(t("gui.title"))
         size(950, 600)
         defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
 
