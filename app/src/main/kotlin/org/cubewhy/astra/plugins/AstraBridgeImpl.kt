@@ -4,6 +4,8 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import org.cubewhy.astra.configs.ConfigManager
+import org.cubewhy.astra.events.EventBus
+import org.cubewhy.astra.events.UpdateStatusEvent
 import kotlin.reflect.full.companionObject
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.functions
@@ -34,5 +36,10 @@ class AstraBridgeImpl(plugin: Plugin) : AstraBridge() {
             .call(config!!::class.companionObjectInstance) as KSerializer<T>
         logger.info { "Save config for plugin $configKey" }
         ConfigManager.config.pluginConfigs[configKey] = JSON.encodeToJsonElement(serializer, config)
+    }
+
+    override fun updateStatus(message: String) {
+        logger.info { "Update status: $message" }
+        EventBus.post(UpdateStatusEvent(message))
     }
 }
