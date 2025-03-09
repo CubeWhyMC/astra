@@ -104,7 +104,7 @@ abstract class ComponentBuilder<out T> where T : Component {
      * @param E The event type that the handler will respond to.
      * @param handler The suspend function that will handle the event.
      */
-    inline fun <reified E: Event> handleEvent(crossinline handler: suspend (E) -> Unit) {
+    inline fun <reified E : Event> handleEvent(crossinline handler: suspend (E) -> Unit) {
         // Register the handler with the event bus
         EventBus.register(E::class) {
             handler(it as E)

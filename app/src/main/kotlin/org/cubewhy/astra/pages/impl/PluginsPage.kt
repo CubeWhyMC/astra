@@ -12,6 +12,7 @@ import org.cubewhy.utils.ui.components.label
 import org.cubewhy.utils.ui.components.list
 import org.cubewhy.utils.ui.components.panel
 import java.awt.BorderLayout
+import java.awt.Color
 import java.awt.Component
 import java.awt.FlowLayout
 import javax.swing.BorderFactory
@@ -41,7 +42,13 @@ class PluginsPage : Page {
                         foreground(list.foreground)
                     }
 
-                    label { text(value.instance.name) }
+                    label {
+                        text(value.instance.name)
+
+                        if (value.state == PluginState.DISABLED) {
+                            foreground(Color.RED)
+                        }
+                    }
                 }
 
                 onChange { plugin ->
@@ -129,6 +136,7 @@ private fun ComponentBuilder<*>.pluginConfigPanel(plugin: InternalPlugin) {
                                     pluginState.set(true)
                                     t("gui.page.plugins.disable")
                                 }
+
                                 PluginState.DISABLED -> {
                                     pluginState.set(false)
                                     t("gui.page.plugins.enable")
