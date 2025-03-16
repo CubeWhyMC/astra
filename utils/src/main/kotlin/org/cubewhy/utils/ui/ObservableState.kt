@@ -18,6 +18,10 @@ class ObservableState<T>(initialValue: T) {
     fun observe(onChange: (T) -> Unit) {
         this.dispatchers.add(onChange)
     }
+
+    fun setSilently(newValue: T) {
+        this.value = newValue
+    }
 }
 
 fun <T> observableStateOf(initialValue: T): ObservableState<T> {

@@ -13,9 +13,11 @@ import java.io.File
 import java.io.OutputStream
 import java.security.MessageDigest
 import java.util.*
+import java.util.concurrent.atomic.AtomicLong
 
 object DownloadUtils {
     private val logger = KotlinLogging.logger {}
+    private val scope = CoroutineScope(Dispatchers.IO)
 
     private val client = HttpClient(OkHttp) {
         engine {
@@ -32,44 +34,45 @@ object DownloadUtils {
         expectedHash: String? = null,
         hashAlgorithm: HashAlgorithm = HashAlgorithm.SHA256
     ) {
-        logger.info { "Starting download: $url -> ${outputFile.absolutePath}" }
+        val outputFile0 = outputFile.canonicalFile
+        logger.info { "Starting download: $url -> ${outputFile0.absolutePath}" }
         // push event
         val fileId = UUID.randomUUID().toString()
 
         val totalSize = getFileSize(url)
         if (totalSize == 0L) {
             logger.warn { "Server does not support range requests. Falling back to single-threaded download." }
-            downloadSingleThread(fileId, url, outputFile)
+            downloadSingleThread(fileId, url, outputFile0)
             return
         }
-        EventBus.post(StartDownloadEvent(fileId, outputFile, numThreads))
+        EventBus.post(StartDownloadEvent(fileId, outputFile0, numThreads))
 
         val partSize = totalSize / numThreads
-        val jobs = mutableListOf<Job>()
-        val partFiles = mutableListOf<File>()
+        val jobs = LinkedList<Job>()
+        val partFiles = LinkedList<File>()
 
-        var downloadedBytes = 0L
+        var downloadedBytes = AtomicLong(0L)
         val progressMutex = Any()
 
         for (i in 0 until numThreads) {
             val startByte = i * partSize
             val endByte = if (i == numThreads - 1) totalSize - 1 else (startByte + partSize - 1)
 
-            val partFile = File(outputFile.parent, "part_${UUID.randomUUID()}")
+            val partFile = File(outputFile0.parent, "${outputFile0.name}.p_$i.part")
             partFiles.add(partFile)
 
             var lastProgress = .0
 
-            jobs += CoroutineScope(Dispatchers.IO).launch {
+            jobs += scope.launch {
                 downloadPart(url, partFile, startByte, endByte) { partDownloaded ->
                     synchronized(progressMutex) {
-                        downloadedBytes += partDownloaded
-                        val progress = (downloadedBytes * 100 / totalSize).toDouble()
+                        downloadedBytes.set(downloadedBytes.get() + partDownloaded)
+                        val progress = (downloadedBytes.toDouble() * 100 / totalSize.toDouble())
                         // push update progress event
                         EventBus.post(UpdateDownloadProgressEvent(fileId, progress))
                         if (lastProgress != progress) {
                             logger.debug {
-                                "Download progress (${outputFile.path}): ${
+                                "Download progress (${outputFile0.path}): ${
                                     String.format(
                                         "%.1f",
                                         progress
@@ -91,14 +94,14 @@ object DownloadUtils {
             return
         }
 
-        logger.info { "Merging downloaded parts of file ${outputFile.path}" }
-        if (outputFile.exists()) outputFile.delete()
-        mergeFiles(partFiles, outputFile.outputStream())
+        logger.info { "Merging downloaded parts of file ${outputFile0.path}" }
+        if (outputFile0.exists()) outputFile0.delete()
+        mergeFiles(partFiles, outputFile0.outputStream())
 
         // Verify hash if expectedHash is provided
         if (expectedHash != null) {
-            if (!verifyHash(outputFile, expectedHash, hashAlgorithm)) {
-                logger.error { "Hash verification failed for file ${outputFile.absolutePath}" }
+            if (!verifyHash(outputFile0, expectedHash, hashAlgorithm)) {
+                logger.error { "Hash verification failed for file ${outputFile0.absolutePath}" }
                 EventBus.post(FinishDownloadEvent(fileId, DownloadStatus.FAILURE))
                 return
             }
@@ -106,7 +109,7 @@ object DownloadUtils {
 
         // push download completed
         EventBus.post(FinishDownloadEvent(fileId, DownloadStatus.SUCCESS))
-        logger.info { "Download completed: ${outputFile.absolutePath}" }
+        logger.info { "Download completed: ${outputFile0.absolutePath}" }
     }
 
     private suspend fun getFileSize(url: String): Long {

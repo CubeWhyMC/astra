@@ -11,7 +11,7 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.valueParameters
 
 object EventBus {
-    private val listeners = mutableMapOf<KClass<*>, MutableList<Pair<Any, suspend (Event) -> Unit>>>()
+    private val listeners = LinkedHashMap<KClass<*>, LinkedList<Pair<Any, suspend (Event) -> Unit>>>()
     private val scope = CoroutineScope(Dispatchers.Default)
 
     fun register(listener: Any) {
@@ -26,13 +26,13 @@ object EventBus {
 
             val eventType = params[0].type.classifier as? KClass<*> ?: continue
 
-            listeners.computeIfAbsent(eventType) { mutableListOf() }
+            listeners.computeIfAbsent(eventType) { LinkedList() }
                 .add(listener to { event -> method.callSuspend(listener, event) })
         }
     }
 
     fun register(type: KClass<out Event>, handler: suspend (Event) -> Unit) {
-        listeners.computeIfAbsent(type) { mutableListOf() }
+        listeners.computeIfAbsent(type) { LinkedList() }
             .add(UUID.randomUUID() to { event -> handler.invoke(event) })
     }
 

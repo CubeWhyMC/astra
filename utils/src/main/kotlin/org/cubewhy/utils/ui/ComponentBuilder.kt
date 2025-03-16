@@ -5,6 +5,7 @@ import org.cubewhy.astra.events.EventBus
 import java.awt.*
 import javax.swing.Box
 import javax.swing.JComponent
+import javax.swing.border.Border
 
 /**
  * Abstract class that provides a builder pattern for creating UI components.
@@ -104,7 +105,7 @@ abstract class ComponentBuilder<out T> where T : Component {
      * @param E The event type that the handler will respond to.
      * @param handler The suspend function that will handle the event.
      */
-    inline fun <reified E : Event> handleEvent(crossinline handler: suspend (E) -> Unit) {
+    inline fun <reified E : Event> handleEvent(crossinline handler: (E) -> Unit) {
         // Register the handler with the event bus
         EventBus.register(E::class) {
             handler(it as E)
@@ -169,4 +170,8 @@ fun ComponentBuilder<JComponent>.alignmentX(alignmentX: Float) {
  */
 fun ComponentBuilder<JComponent>.alignmentY(alignmentY: Float) {
     this.component.alignmentY = alignmentY
+}
+
+fun ComponentBuilder<JComponent>.border(init: ComponentBuilder<JComponent>.() -> Border) {
+    this.component.border = init.invoke(this)
 }

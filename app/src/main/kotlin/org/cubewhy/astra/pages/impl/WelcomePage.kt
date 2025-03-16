@@ -3,6 +3,7 @@ package org.cubewhy.astra.pages.impl
 import org.cubewhy.astra.plugins.Page
 import org.cubewhy.astra.ui.t
 import org.cubewhy.utils.ui.alignmentX
+import org.cubewhy.utils.ui.border
 import org.cubewhy.utils.ui.boxLayout
 import org.cubewhy.utils.ui.components.label
 import org.cubewhy.utils.ui.components.panel

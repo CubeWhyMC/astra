@@ -10,7 +10,7 @@ import kotlin.reflect.full.companionObject
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.functions
 
-class AstraBridgeImpl(plugin: Plugin) : AstraBridge() {
+class AstraBridgeImpl(private val plugin: Plugin) : AstraBridge() {
     companion object {
         private val logger = KotlinLogging.logger {}
         private val JSON = Json { ignoreUnknownKeys = true }
@@ -40,6 +40,6 @@ class AstraBridgeImpl(plugin: Plugin) : AstraBridge() {
 
     override fun updateStatus(message: String) {
         logger.info { "Update status: $message" }
-        EventBus.post(UpdateStatusEvent(message))
+        EventBus.post(UpdateStatusEvent("[${this.plugin.name}] $message"))
     }
 }

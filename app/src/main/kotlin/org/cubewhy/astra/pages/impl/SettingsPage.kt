@@ -5,6 +5,7 @@ import org.cubewhy.astra.configs.Language
 import org.cubewhy.astra.plugins.Page
 import org.cubewhy.astra.ui.t
 import org.cubewhy.utils.ui.alignmentX
+import org.cubewhy.utils.ui.border
 import org.cubewhy.utils.ui.boxLayout
 import org.cubewhy.utils.ui.components.comboBox
 import org.cubewhy.utils.ui.components.label
